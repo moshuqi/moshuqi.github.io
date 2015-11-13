@@ -1,1 +1,11 @@
-<H1>        小頔子是猪！</H1>
+---
+layout: default
+title: 小頔子之歌~：）
+---
+<h2>{{ page.title }}</h2>
+<p>最新文章</p>
+<ul>
+　　{% for post in site.posts %}
+　　　　<li>{{ post.date | date_to_string }} <a href="{{ site.baseurl }}{{ post.url }}">{{ post.title }}</a></li>
+　　　　{% endfor %}
+</ul>
