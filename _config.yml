@@ -101,6 +101,12 @@ customLinks:
       url: http://www.google.com/fonts/
     - text: jQuery
       url: http://jquery.com/
+    - text: jQuery
+      url: http://jquery.com/
+    - text: jQuery
+      url: http://jquery.com/
+    - text: jQuery
+      url: http://jquery.com/
     message: 其他相关链接
 
 #googleAnaly, your id link UA-12345678-X
