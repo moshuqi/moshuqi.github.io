@@ -39,7 +39,7 @@ timezone:      null
 gems: [jekyll-paginate]
 
 #Site config
-title: Title~~~
+title: Msq's
 description: Just another Jekyll theme design and code by zhanxin.info.
 keywords: Jekyll Theme
 url: https://moshuqi.github.io
@@ -56,12 +56,12 @@ nav:
     url: /archives.html
   - text: 联系我
     url: /contact.html
-  - text: 友情链接
+  - text: 其他链接
     url: /links.html
 
 #Author config
 author:
-    name: 莫书旗
+    name: Msq
     email: moshuqi123@gmail.com
     imageLink: http://img0.imgtn.bdimg.com/it/u=4079873806,1394022954&fm=21&gp=0.jpg
     simpleIntro: 精通番茄炒蛋、青椒炒蛋的iOS程序员。
