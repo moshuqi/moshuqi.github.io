@@ -67,7 +67,6 @@ author:
     simpleIntro: 精通番茄炒蛋、青椒炒蛋的iOS程序员。
     detailIntro:
       <p>以下广告位长期招租 ：）</p>
-      
 
 #Follow me, you can choose your icon by http://fortawesome.github.io/Font-Awesome/icons/#brand
 follow:
@@ -83,7 +82,7 @@ customLinks:
       url: http://www.raywenderlich.com
     - text: objc中国
       url: http://objccn.io
-     - text: OneV's Den
+    - text: OneV's Den
       url: http://www.onevcat.com/#blog
     - text: 唐巧的技术博客
       url: http://blog.devtang.com
