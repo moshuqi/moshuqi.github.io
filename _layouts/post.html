@@ -19,15 +19,7 @@ comment: true
         <a class="next" href="{{ page.next.url }}" rel="bookmark">{{ page.next.title | truncatewords:5 }}&nbsp;&raquo;</a>
         {% endif %}
     </nav>
-    <div class="comment">
-        {% if site.disqus.config %}
-        <div id="disqus_thread"></div>
-        {% else %}
-            {% if site.duoshuo.config %}
-            <div class="ds-thread"></div>
-            {% endif %}
-        {% endif %}
-    </div>
+
     <!-- 多说评论框 start -->
 	<div class="ds-thread" data-thread-key="{{ page.id }}" data-title="{{ page.title }}" data-url="https://moshuqi.github.io{{ page.url }}"></div>
 <!-- 多说评论框 end -->
