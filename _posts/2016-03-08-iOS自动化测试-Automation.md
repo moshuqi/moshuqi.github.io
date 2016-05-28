@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  iOS自动化测试-Automation
+title:  iOS 自动化测试 UI Automation
 category: "iOS"
 ---
 
