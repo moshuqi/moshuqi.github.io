@@ -70,7 +70,7 @@ App的界面如图
 
 ![image1]({{ site.url }}/assets/AutoTest/13.jpg)
 
-
+自动操作的实现大概就是这样。当然，现实的自动化测试中肯定会涉及到更复杂的操作流程，可以通过脚本调用各种控件对应的事件操作接口，自定义操作的顺序，来实现自动化测试流程。
 
 
 <h3>一个简单的Demo</h3>
@@ -247,10 +247,83 @@ App的界面如图
 
 接下来用非录制的方式创建个脚本，用来在界面上进行随机位置的点击。
 
+随机点击屏幕脚本
+
+	var target = UIATarget.localTarget();
+	var app = target.frontMostApp();
+	var window = app.mainWindow();
+	
+	var rect = target.rect();
+	var w = rect.size.width;
+	var h = rect.size.height;
+	
+	for (;;)
+	{
+	    var x = Math.random() * w;
+	    var y = Math.random() * h;
+	    target.tap({x, y});
+	}
+
+*target.rect()*获取的是屏幕界面的rect，包含了屏幕的尺寸大小。
+
+通过*for*无限循环来产生随机的点击事件，点击的位置为屏幕范围内的任意点。**target**的*tap()*方法传递位置参数，并在界面上进行点击操作。
+
+运行节本的过程中能够看到界面上按钮的值不停递增
+
+![image1]({{ site.url }}/assets/AutoTest/14.jpg)
+
+instrument上也不断有打印输出
+
+![image1]({{ site.url }}/assets/AutoTest/15.jpg)
+
+若想控制脚本点击事件的间隔，可以再每次点击之后加上**target**的*delay()*方法，参数为秒，延迟一定的时间后再继续运行脚本。
+
+延迟2秒再继续
+
+	target.delay(2);
+	
+可以输出log内容
+
+	UIALogger.logMessage(msg);
+
+<h3>每一次点击操作都针对按钮</h3>
+
+有时候App上的按钮可能只有几个，全屏的随机点击事件点击到按钮的概率比较低，此时需要每次点击事件都针对按钮进行操作，脚本可以这样处理
+
+	var target = UIATarget.localTarget();
+	var app = target.frontMostApp();
+	var window = app.mainWindow();
+	
+	var count = window.buttons().toArray().length;
+	var msg = "total buttons: " + count.toString();
+	UIALogger.logMessage(msg);
+	
+	for (;;)
+	{
+	    var index = Math.floor(Math.random() * count);
+	    var btn = window.buttons()[index];
+	    btn.tap();
+	    target.delay(1);
+	}
+
+**window**的*buttons()*返回的是它所包含的所有按钮，为**UIAElementArray**类型，转换成Array后计算元素的数量。
+
+***window.buttons()[index]*** **index**为按钮的索引值，可以通过下标索引的方式来获取其中的某一个按钮。
+
+获取到按钮后通过*tap()*产生点击事件。每次操作间有个1秒的延迟。
 
 
+<h3>结</h3>
 
+自动化测试的方式基本用法如上所示。Demo展示的内容比较基本，还有各种更复杂的玩法和细节改天有空再研究了。还有一些第三方提供的自动化工具之类的，以后专门再写一篇文章。
 
+脚本的代码直接复制粘贴上即可跑起来。
+
+[工程源码地址](https://github.com/moshuqi/DemoCodes/tree/master/AutoTest)
+
+转载请保留原文地址：https://moshuqi.github.io/ios/2016/03/08/iOS自动化测试-Automation.html
+
+<h4>完。</h4>
 
 
 
