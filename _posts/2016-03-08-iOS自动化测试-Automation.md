@@ -168,7 +168,7 @@ category: "iOS"
 
 点击按钮之间的空白区域也会生成对应的脚本代码，包含了具体的点击位置数据
 
-![image1]({{ site.url }}/assets/AutoTest/8.jpg)
+![image1]({{ site.url }}/assets/AutoTest/6.jpg)
 
 
 
