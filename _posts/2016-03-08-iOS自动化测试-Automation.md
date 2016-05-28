@@ -122,6 +122,58 @@ category: "iOS"
 
 至此Demo App方面的代码实现完成，跑起来界面效果如上图所示。
 
+<h3>编写自动化脚本</h3>
+
+运行profile：xcode工具栏->Product->Profile，选择Automation选项
+
+![image1]({{ site.url }}/assets/AutoTest/2.jpg)
+
+之后进入界面，如下图所示，图中标记几处需要留意的地方。
+
+![image1]({{ site.url }}/assets/AutoTest/3.jpg)
+
+中间的黑色区域为编写JavaScript脚本的地方，系统会自己默认自动添加了行代码
+
+	var target = UIATarget.localTarget();
+	
+编码区域上方的**Script**按钮点击展开还会有另外两个选项：**Trace Log**和**Editor Log**，分别用来打印对应的记录。
+
+左上角的红色圈按钮，点击会运行程序。
+
+图下方的三个按钮，第一个三角形图标的按钮，可以在程序已经跑起来的时候，实时更改脚本并运行；第二个红色圆形按钮用来录制操作，能将对App的每一次操作生成对应的脚本语句，下次直接跑脚本就能将之前的操作自动重复一次了。
+
+右边还有按钮能导入导出脚本，给脚本文件改名，暂停继续脚本的运行等。
+
+<h3>脚本的录制</h3>
+
+点击下方的录制按钮，这时候程序运行起来，进行一系列操作，例如，从左上角开始，将外围的一圈按钮按顺时针顺序依次点击。结果如图：
+
+![image1]({{ site.url }}/assets/AutoTest/4.jpg)
+
+在点击的过程中会发现，每次点击操作在脚本编辑区域都会生成一行代码
+
+![image1]({{ site.url }}/assets/AutoTest/5.jpg)
+
+代码生成的速度会比实际的操作稍微延时。
+
+开始以为生成的代码都是一样的都是
+
+	target.frontMostApp()
+	
+所以就很好奇它是怎样具体去区分每一个按钮的呢？直到无意中把代码区域的拖动全选了下才发现。。。
+
+![image1]({{ site.url }}/assets/AutoTest/7.jpg)
+
+突然感受到深深的恶意...-_-
+
+点击按钮之间的空白区域也会生成对应的脚本代码，包含了具体的点击位置数据
+
+![image1]({{ site.url }}/assets/AutoTest/8.jpg)
+
+
+
+
+
 
 
 
