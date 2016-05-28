@@ -321,7 +321,7 @@ instrument上也不断有打印输出
 
 [工程源码地址](https://github.com/moshuqi/DemoCodes/tree/master/AutoTest)
 
-转载请保留原文地址：https://moshuqi.github.io/ios/2016/03/08/iOS自动化测试-Automation.html
+转载请保留原文地址：[https://moshuqi.github.io/ios/2016/03/08/iOS自动化测试-Automation.html](https://moshuqi.github.io/ios/2016/03/08/iOS自动化测试-Automation.html)
 
 <h4>完。</h4>
 
