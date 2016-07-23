@@ -272,6 +272,103 @@ iOS在子线程中操作UI会导致刷新延迟卡顿，还会存在潜在的崩
 
 传入参数为**Class**和要替换的方法名称
 
+通过**Class**和方法名称获取到对应的**Method**
+
+
+	SEL selector = NSSelectorFromString(selectorName);
+    Method method = class_getInstanceMethod(cls, selector);
+    
+
+*method_getTypeEncoding*返回的是一个字符串，用来描述方法的参数、返回值，字符所代表的类型具体可参考[官方文档](https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html#//apple_ref/doc/uid/TP40008048-CH100)
+    
+    const char *typeDescription = (char *)method_getTypeEncoding(method);
+
+*class_getMethodImplementation*获取方法对应的IMP，这里用来保存方法原始的IMP
+
+	IMP originalImp = class_getMethodImplementation(cls, selector);
+
+**_objc_msgForward**用于消息转发，关于消息转发可以参考[这篇文章](http://blog.ibireme.com/2013/11/26/objective-c-messaging/)，最浅显的理解方式就是，当将原来的**IMP**替换成*_objc_msgForward*时，直接进行消息的转发，调用*forwardInvocation:*。
+
+	IMP msgForwardIMP = _objc_msgForward;
+
+*class_replaceMethod* 将原来的IMP替换掉
+
+	class_replaceMethod(cls, selector, msgForwardIMP, typeDescription);
+	
+将*forwardInvocation:*替换成我们自定义的方法*myForwardInvocation*，这样在消息重定位时便会运行到*myForwardInvocation*，在这个方法里做线程的判断处理。
+
+	if (class_getMethodImplementation(cls, @selector(forwardInvocation:)) != (IMP)myForwardInvocation)
+    {
+        class_replaceMethod(cls, @selector(forwardInvocation:), (IMP)myForwardInvocation, typeDescription);
+    }
+
+*myForwardInvocation*的定义为：
+
+	static void myForwardInvocation(id slf, SEL selector, NSInvocation *invocation);
+	
+参数的定义必须保证和IMP一致，第三个参数定义为**NSInvocation*** 是要保证和 *forwardInvocation:* 的参数一致
+
+	id (*IMP)(id, SEL, ...)
+
+Ps. **IMP**使用当前CPU架构实现的标准的C调用约定。第一个参数是指向self的指针(如果是实例方法，则是类实例的内存地址；如果是类方法，则是指向元类的指针)，第二个参数是方法选择器(selector)，接下来是方法的实际参数列表。
+
+最终将原始**IMP**重新添加到类中，**IMP**的方法名称为原始方法名前加前缀*ORIG_*，后续会通过这个方法名称获取原始的**IMP**，并将函数进行正常的流程处理
+
+	if (class_respondsToSelector(cls, selector))
+    {
+        NSString *originalSelectorName = [NSString stringWithFormat:@"ORIG_%@", selectorName];
+        SEL originalSelector = NSSelectorFromString(originalSelectorName);
+        if(!class_respondsToSelector(cls, originalSelector))
+        {
+            class_addMethod(cls, originalSelector, originalImp, typeDescription);
+        }
+    }
+
+*myForwardInvocation*方法实现如下
+
+	static void myForwardInvocation(id slf, SEL selector, NSInvocation *invocation)
+	{
+	    if (![NSThread currentThread].isMainThread)
+	    {
+	        NSLog(@"%@",[NSThread callStackSymbols]);
+	    }
+	    
+	    NSString *selectorName = NSStringFromSelector(invocation.selector);
+	    NSString *origSelectorName = [NSString stringWithFormat:@"ORIG_%@", selectorName];
+	    SEL origSelector = NSSelectorFromString(origSelectorName);
+	    
+	    invocation.selector = origSelector;
+	    [invocation invoke];
+	}
+
+通过**[NSThread currentThread].isMainThread**判断当前是否为主线程，若不是则打印当前调用栈。
+
+也可以通过数组插入nil的方式，让程序崩溃，打开异常断点进行调试时，若有子线程操作UI情况则会立即崩溃，具体出现问题的代码便一目了然了。
+
+正常执行的时候回通过*ORIG_*前缀名获取到当前函数的原始方法，此时用原始方法继续运行既和正常的调用一致。
+
+接下来测试一下，随便找个视图控制器加上代码：
+
+	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(){
+	        UIView *v = [UIView new];
+	        [self.view addSubview:v];
+	    });
+
+因为**MainThreadGuard**在程序运行时便会进行处理，所以并不需要在哪个地方引入头文件。
+
+运行起来，崩溃的地方就能直接看到是在哪个子线程操作UI了:)
+
+![image1]({{ site.url }}/assets/MTGuard/1.jpg)
+
+
+<h3>最后</h3>
+
+使用的时候直接将**MainThreadGuard**类拖到项目中即可，为了方便专门定义了一个相关的宏，在debug的时候打开即可。
+
+[源码下载](https://github.com/moshuqi/DemoCodes/tree/master/MTGuard)
+
+**完。**
+
 
 
 
