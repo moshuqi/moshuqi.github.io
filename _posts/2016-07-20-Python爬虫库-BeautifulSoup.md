@@ -30,8 +30,6 @@ category: "Python"
 
 ![image1]({{ site.url }}/assets/BS4/1.jpg)
 
-最后会实现一个demo，爬取页面上所有缩略图对应的标题、跳转url和图片地址。
-
 
 <h4>BeautifulSoup 对象初始化</h4>
 
@@ -131,7 +129,7 @@ ps. 因为class属于多值属性，所以它的值为数组。
 
 如下图：
 
-![image1]({{ site.url }}/assets/BS4/1.jpg)
+![image1]({{ site.url }}/assets/BS4/2.jpg)
 
 我们希望获取到 **article** 标签中的 **li**
 
