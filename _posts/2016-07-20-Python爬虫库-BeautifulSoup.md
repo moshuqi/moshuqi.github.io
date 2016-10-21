@@ -30,7 +30,7 @@ category: "Python"
 
 ![image1]({{ site.url }}/assets/BS4/1.jpg)
 
-最后会实现一个demo，爬取页面上所有缩略图对应的标题、跳转url和图片地址。
+
 
 
 <h4>BeautifulSoup 对象初始化</h4>
@@ -47,13 +47,13 @@ category: "Python"
 	response = urllib2.urlopen(request, timeout=20)
 	
 	content = response.read()
-	soup = BeautifulSoup(content, 'HTML.parser')
+	soup = BeautifulSoup(content, 'html.parser')
 	
 request 请求没有做异常处理，这里暂时先忽略。***BeautifulSoup*** 构造方法的第二个参数为文档解析器，若不传入该参数，BeautifulSoup会自行选择最合适的解析器来解析文档，不过会有警告提示。
 
-也可以通过文件句柄来初始化，可先将HTML的源码保存到本地同级目录 **reo.HTML**，然后将文件名作为参数：
+也可以通过文件句柄来初始化，可先将HTML的源码保存到本地同级目录 **reo.html**，然后将文件名作为参数：
 
-	soup = BeautifulSoup(open('reo.HTML'))
+	soup = BeautifulSoup(open('reo.html'))
 
 可以打印 **soup**，输出内容和HTML文本无二致，此时它为一个复杂的树形结构，每个节点都是Python对象。
 
@@ -131,7 +131,7 @@ ps. 因为class属于多值属性，所以它的值为数组。
 
 如下图：
 
-![image1]({{ site.url }}/assets/BS4/1.jpg)
+![image1]({{ site.url }}/assets/BS4/2.jpg)
 
 我们希望获取到 **article** 标签中的 **li**
 
