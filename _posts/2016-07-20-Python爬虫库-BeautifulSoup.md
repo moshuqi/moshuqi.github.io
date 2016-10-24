@@ -30,11 +30,6 @@ category: "Python"
 
 ![image1]({{ site.url }}/assets/BS4/1.jpg)
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 88c1cf83a4027139ae1522812cc632b5f6f72556
 
 <h4>BeautifulSoup 对象初始化</h4>
 
