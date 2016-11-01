@@ -39,3 +39,15 @@ category: "Python"
 ![image1]({{ site.url }}/assets/pyspider/2.jpg)
 
 这样pyspider就算是跑起来了。有的文章会提到需要安装**phantomjs**，这个暂时用不上，先忽略。
+
+
+<h3>开始</h3>
+
+拿这个网页来做例子：[www.reeoo.com](http://www.reeoo.com)，爬取上面的数据。
+
+![image1]({{ site.url }}/assets/pyspider/3.jpg)
+
+
+
+
+
