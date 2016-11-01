@@ -32,11 +32,11 @@ category: "Python"
 	
 运行结果如下图所示
 
-![image1]({{ site.url }}/assets/pyspider/1.jpg)
+![image1]({{ site.url }}/assets/pysp/1.jpg)
 
 可以看到webui运行在**5000**端口处，在浏览器打开[127.0.0.1:5000](http://127.0.0.1:5000)或者[localhost:5000](http://localhost:5000)，便能看到框架的UI界面，如下图
 
-![image1]({{ site.url }}/assets/pyspider/2.jpg)
+![image1]({{ site.url }}/assets/pysp/2.jpg)
 
 这样pyspider就算是跑起来了。有的文章会提到需要安装**phantomjs**，这个暂时用不上，先忽略。
 
@@ -45,7 +45,7 @@ category: "Python"
 
 拿这个网页来做例子：[www.reeoo.com](http://www.reeoo.com)，爬取上面的数据。
 
-![image1]({{ site.url }}/assets/pyspider/3.jpg)
+![image1]({{ site.url }}/assets/pysp/3.jpg)
 
 
 
