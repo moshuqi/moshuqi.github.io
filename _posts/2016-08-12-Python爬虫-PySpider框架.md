@@ -47,6 +47,21 @@ category: "Python"
 
 ![image1]({{ site.url }}/assets/pysp/3.jpg)
 
+<h4>新建任务</h4>
+
+第一次跑起来的时候因为没有任务，界面的列表为空，右边有个**Create**按钮，点击新建任务。
+
+![image1]({{ site.url }}/assets/pysp/4.jpg)
+
++	Project Name：任务的名字，可以任意填
++	Start URL(s)：爬取任务开始的地址，这里我们填目标网址的url
+
+填写完成后，点击**Create**，便创建成功并跳转到了另一个界面，如下图所示
+
+![image1]({{ site.url }}/assets/pysp/5.jpg)
+
+
+
 
 
 
