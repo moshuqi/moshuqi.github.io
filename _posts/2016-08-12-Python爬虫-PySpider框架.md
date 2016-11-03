@@ -91,82 +91,49 @@ category: "Python"
 	        }
 
 
-00
++	**on_start(self)**	程序的入口，当点击左侧绿色区域右上角的 **run** 按钮时首先会调用这个函数
+
++	**self.crawl(url, callback)**	pyspider库主要的API，用于创建一个爬取任务，**url** 为目标地址，这里为我们刚刚创建任务指定的起始地址，**callback** 为抓取到数据后的回调函数
+
++	**index_page(self, response)**	参数为 **Response** 对象，**response.doc** 为 **pyquery** 对象（[具体使用可见pyquery官方文档](https://pythonhosted.org/pyquery/)），pyquery和jQuery类似，主要用来方便地抓取返回的html文档中对应标签的数据
+
++	**detail_page(self, response)**		返回一个 **dict** 对象作为结果，结果会自动保存到默认的 **resultdb** 中，也可以通过重载方法来讲结果数据存储到指定的数据库，后面会再提到具体的实现
+
+其他一些参数
+
++	@every(minutes=24 * 60)
 
 
-	#!/usr/bin/env python
-	# -*- encoding: utf-8 -*-
-	# Created on 2016-10-25 09:30:00
-	# Project: test
-	
-	from pyspider.libs.base_handler import *
-	import pymongo
-	
-	class Handler(BaseHandler):
-	    crawl_config = {
-	    }
-	
-	    @every(minutes=24 * 60)
-	    def on_start(self):
-	        self.crawl('http://www.reeoo.com', callback=self.index_page)
-	
-	    @config(age=10 * 24 * 60 * 60)
-	    def index_page(self, response):
-	        for each in response.doc('div[class="thumb"]').items():
-	            detail_url = each('a').attr.href
-	            print (detail_url)
-	            self.crawl(detail_url, callback=self.detail_page)
-	
-	    @config(priority=2)
-	    def detail_page(self, response):
-	        header = response.doc('body > article > section > header')
-	        title = header('h1').text()
-	        # print (title)
-	        
-	        tags = []
-	        for each in header.items('a'):
-	            tags.append(each.text())
-	        # print (tags)
-	        
-	        content = response.doc('div[id="post_content"]')
-	        description = content('blockquote > p').text()
-	        # print (description)
-	        
-	        website_url = content('a').attr.href
-	        # print (website_url)
-	        
-	        image_url_list = []
-	        for each in content.items('img[data-src]'):
-	            image_url_list.append(each.attr('data-src'))
-	        # print (image_url_list)
-	        
-	        return {
-	            "title": title,
-	            "tags": tags,
-	            "description": description,
-	            "image_url_list": image_url_list,
-	            "website_url": website_url,
-	        }
-	    
-	    def on_result(self, result):
-	        print ('------------------')
-	        print (result)
-	        print ('------------------')
-	        
-	        client = pymongo.MongoClient(host='127.0.0.1', port=27017)
-	        db = client['pyspyspider_projectdb']
-	        coll = db['website']
-	        
-	        data = {
-	            'title': result['title'],
-	            'tags': result['tags'],
-	            'description': result['description'],
-	            'website_url': result['website_url'],
-	            'image_url_list': result['image_url_list']
-	        }
-	        
-	        data_id = coll.insert(data)
-	        print (data_id)
+**Ps.** 需要注意的一个地方，前面跑的 **run.py** 不是下载的源码文件夹中的，而是在 `pyspider` 文件夹中的 **run.py**，如下图，可以看到有两个 **run.py** 文件，虽然两个都能跑起来，但我们用到的是圈出来的那个，否则不能通过 **--config** 配置。
+
+![image1]({{ site.url }}/assets/pysp/6.jpg)
+
+成功跑起来之后可以看到在当前文件夹中生成了一个 `data` 文件夹，生成的结果默认会保存到 **result.db** 中，爬取数据后可打开看里面保存了运行的结果。
+
+![image1]({{ site.url }}/assets/pysp/7.jpg)
+
+<h4>运行</h4>
+
+点击左边绿色区域右上角的 **run** 按钮，运行之后页面下册的 **follows** 按钮出现红色角标
+
+![image1]({{ site.url }}/assets/pysp/8.jpg)
+
+选中 **follows** 按钮，看到 **index_page** 行，点击行右侧的运行按钮
+
+![image1]({{ site.url }}/assets/pysp/9.jpg)
+
+运行完成后显示如下图，即 `www.reeoo.com` 页面上所有的url
+
+![image1]({{ site.url }}/assets/pysp/10.jpg)
+
+
+
+
+
+
+
+
+
         
         
         
