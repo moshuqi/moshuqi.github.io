@@ -333,6 +333,8 @@ category: "Python"
 
 **data_id = coll.insert(data)** 将数据以我们制定的模式存储到 **mongodb** 中。
 
+（除了重载on_result方法外，也可以通过重载ResultWorker类来实行结果的处理，需要在配置文件中加上对应的参数。）
+
 重新新建一个任务，将完整的代码拷进去，在主界面完成的跑一遍。
 
 运行过程中可以看到 **mongodb** 中的打印不断有数据插入
