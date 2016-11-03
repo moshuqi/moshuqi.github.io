@@ -101,7 +101,11 @@ category: "Python"
 
 其他一些参数
 
-+	@every(minutes=24 * 60)
++	**@every(minutes=24 * 60)**		通知 **scheduler**（框架的模块） 每天运行一次
+
++	**@config(age=10 * 24 * 60 * 60)**		设置任务的有效期限，在这个期限内目标爬取的网页被认为不会进行修改
+
++	**@config(priority=2)**		设定任务优先级
 
 
 **Ps.** 需要注意的一个地方，前面跑的 **run.py** 不是下载的源码文件夹中的，而是在 `pyspider` 文件夹中的 **run.py**，如下图，可以看到有两个 **run.py** 文件，虽然两个都能跑起来，但我们用到的是圈出来的那个，否则不能通过 **--config** 配置。
@@ -125,6 +129,81 @@ category: "Python"
 运行完成后显示如下图，即 `www.reeoo.com` 页面上所有的url
 
 ![image1]({{ site.url }}/assets/pysp/10.jpg)
+
+此时我们可以任意选择一个结果运行，这时候调用的是 **detail_page** 方法，返回最终的结果。
+
+结果为json格式的数据，这里我们保存的是网页的 `title` 和 `url`，见左侧黑色的区域
+
+![image1]({{ site.url }}/assets/pysp/11.jpg)
+
+回到主页面，此时看到任务列表显示了我们刚刚创建的任务，设置 **status** 为 `running`，然后点击 **Run** 按钮执行
+
+![image1]({{ site.url }}/assets/pysp/12.jpg)
+
+执行过程中可以看到整个过程的打印输出
+
+![image1]({{ site.url }}/assets/pysp/13.jpg)
+
+执行完成后，点击 **Results** 按钮，进入到爬取结果的页面
+
+![image1]({{ site.url }}/assets/pysp/14.jpg)
+
+![image1]({{ site.url }}/assets/pysp/15.jpg)
+
+右上方的按钮选择将结果数据保存成对应的格式，例如：JSON格式的数据为：
+
+![image1]({{ site.url }}/assets/pysp/16.jpg)
+
+以上则为pyspider的基本使用方式。
+
+<h3>自定义爬取指定数据</h3>
+
+接下来我们通过自定义来抓取我们需要的数据，目标为抓取这个页面中，每个详情页内容的标题、标签、描述、图片的url、点击图片所跳转的url。
+
+![image1]({{ site.url }}/assets/pysp/17.jpg)
+
+![image1]({{ site.url }}/assets/pysp/18.jpg)
+
+点击首页中的 **project name > reo**，跳转到脚本的编辑界面
+
+![image1]({{ site.url }}/assets/pysp/19.jpg)
+
+<h4>获取所有详情页面的url</h4>
+
+**index_page(self, response)** 函数为获取到 `www.reeoo.com` 页面所有信息之后的回调，我们需要在该函数中对 **response** 进行处理，提取出详情页的url。
+
+通过查看源码，可以发现 **class** 为 **thum** 的 **div** 标签里，所包含的 **a** 标签的 **href** 值即为我们需要提取的数据，如下图
+
+![image1]({{ site.url }}/assets/pysp/20.jpg)
+
+代码的实现
+
+	def index_page(self, response):	
+        for each in response.doc('div[class="thumb"]').items():
+            detail_url = each('a').attr.href
+            print (detail_url)
+            self.crawl(detail_url, callback=self.detail_page)
+            
+**response.doc('div[class="thumb"]').items()** 返回的是所有 **class** 为 **thumb** 的 **div** 标签，可以通过循环 **for...in** 进行遍历。
+
+**each('a').attr.href** 对于每个 **div** 标签，获取它的 **a** 标签的 **href** 属性。
+
+可以将最终获取到的url打印，并传入 **crawl** 中进行下一步的抓取。
+
+运行起来之后的结果如下图，中间的灰色区域为打印的结果
+
+![image1]({{ site.url }}/assets/pysp/21.jpg)
+
+注意左侧区域下方的几个按钮，可以展示当前所爬取页面的一些信息，**web** 按钮可以查看当前页面，**html** 显示当前页面的源码，**enable css selector helper** 可以通过选中当前页面的元素自动生成对应的 css 选择器方便的插入到脚本代码中，不过并不是总有效，在我们的demo中就是无效的~
+
+![image1]({{ site.url }}/assets/pysp/21.jpg)
+
+![image1]({{ site.url }}/assets/pysp/22.jpg)
+
+<h4>抓取详情页中指定的信息</h4>
+
+
+
 
 
 
