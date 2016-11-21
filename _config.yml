@@ -1,105 +1,115 @@
-# Where things are
-source:       .
-destination:  ./_site
-plugins_dir:      ./plugins
-layouts_dir:      ./_layouts
-paginate:     8
+# ---------------- #
+#   Main Configs   #
+# ---------------- #
+baseurl:
+url: /
+date_format: "ordinal"
+title: Msq
+subtitle: "打杂的。"
+description: "moshuqi 个人博客"
+keywords: moshuqi msq
+favicon: /favicon.ico
+timezone: Asia/Shanghai
+encoding: "utf-8"
+side_bar_repo_limit: 5
 
-# Handling Reading
-safe:         false
-include:      [".htaccess"]
-exclude:      []
-keep_files:   [".git", ".svn"]
-encoding:     "utf-8"
-markdown_ext: "markdown,mkdown,mkdn,mkd,md"
-textile_ext:  "textile"
+# ---------------- #
+#      Author      #
+# ---------------- #
+author: moshuqi
+organization: HD, Inc.
+organization_url: http://www.huiditech.net
+location: Zhuhai, China
+email: moshuqi123@gmail.com
 
-# Filtering Content
-show_drafts:  null
-limit_posts:  0
-future:       true
-unpublished:  false
+# ---------------- #
+#    Navigation    #
+# ---------------- #
+navs:
+  -
+    href: /
+    label: 首页
 
-# Conversion
-markdown:     kramdown
-highlighter:  rouge
-lsi:          false
+  -
+    href: /categories/
+    label: 分类
+
+  # -
+  #   href: /wiki/
+  #   label: 维基
+
+  -
+    href: /links/
+    label: 链接
+
+  -
+    href: /about/
+    label: 关于
+
+# ---------------- #
+#       RSS        #
+# ---------------- #
+subscribe_rss: /feed.xml
+
+# ---------------- #
+#      Jekyll      #
+# ---------------- #
+markdown: kramdown
+kramdown:
+    input: GFM
+highlighter: rouge
+paginate: 8
+lsi: false
+quiet: false
 excerpt_separator: "\n\n"
+permalink: /:year/:month/:day/:title/
+gems:
+    - jekyll-github-metadata
+    - rouge
+#     - jekyll-html-pipeline
+    - jekyll-paginate
+    - jekyll-sitemap
+    - jekyll-feed
+    - jemoji
+#     - jekyll-mentions
+collections:
+    wiki:
+        output: true
+        permalink: /wiki/:path/
 
-# Serving
-detach:       false
-port:         4000
-host:         127.0.0.1
-baseurl:      "" # does not include hostname
+repository: moshuqi/moshuqi.github.io
 
-# Outputting
-permalink:     date
-paginate_path: /page:num
-timezone:      null
-gems: [jekyll-paginate]
+# ---------------- #
+#      Socials     #
+# ---------------- #
+github_username: moshuqi
+# douban_username: freedim
+# facebook_username: mzlogin
+# weibo_username: mzlogin
+# zhihu_username: mzlogin
+# twitter_username: mzlogin
 
-#Site config
-title: Msq's
-description: Just another Jekyll theme design and code by zhanxin.info.
-keywords: Jekyll Theme
-url: https://moshuqi.github.io
-feed: /atom.xml
-favicon: http://jekyllrb.com/favicon.png
+# ---------------- #
+#      Comments    #
+# ---------------- #
+# support provider: disqus, duoshuo
+comments_provider: disqus
+# !!!重要!!! 请修改下面两个用户名为你自己申请的
+# !!!Important!!! Please modify usernames below to yours
+duoshuo_username: moshuqi
+disqus_username: moshuqi
+# 在使用 disqus 的时候可点击显示多说评论框
+lazy_load_duoshuo: true
 
-#Nav config
-nav:
-  - text: 首页
-    url: /index.html
-  - text: 分类目录 
-    url: /categories.html
-  - text: 文章归档
-    url: /archives.html
-  - text: 联系我
-    url: /contact.html
-  - text: 其他链接
-    url: /links.html
+# ---------------- #
+#    Analytics     #
+# ---------------- #
+google:
+    analytics_id: UA-80669434-1
 
-#Author config
-author:
-    name: Msq
-    email: moshuqi123@gmail.com
-    imageLink: https://raw.githubusercontent.com/moshuqi/moshuqi.github.io/master/images/icon.jpg
-    simpleIntro: 精通番茄炒蛋、青椒炒蛋的iOS程序员。
-    detailIntro:
-      <p>以下广告位长期招租 ：）</p>
-
-#Follow me, you can choose your icon by http://fortawesome.github.io/Font-Awesome/icons/#brand
-follow:
-  - class: icon-github-alt
-    url: https://github.com/moshuqi
-  - class: icon-google-plus
-    url: http://google.com
-
-#Links
-customLinks:
-  - item:
-    - text: RAYWENDERLICH
-      url: http://www.raywenderlich.com
-    - text: objc中国
-      url: http://objccn.io
-    - text: OneV's Den
-      url: http://www.onevcat.com/#blog
-    - text: 唐巧的技术博客
-      url: http://blog.devtang.com
-    - text: jekyll
-      url: http://jekyllrb.com
-    message: Mark
-
-#googleAnaly, your id link UA-12345678-X
-googleAnaly:
-  config: true
-  id: UA-40169250-1
-
-#comment config
-disqus:
-  config: false
-  id: piznblog
-
-duoshuo:
-  config: true
-  id: moshuqi
+# ---------------- #
+#      Datas       #
+# ---------------- #
+skill_software_keywords: [Java, C++, Python, Design Patterns]
+skill_mobile_app_keywords: [Android, Reverse Engineering]
+skill_windows_keywords: [Win32 SDK, DuiLib, WTL, COM, WinDbg]

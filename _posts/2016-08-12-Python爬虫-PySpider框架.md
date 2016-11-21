@@ -32,11 +32,11 @@ category: "Python"
 	
 运行结果如下图所示
 
-![image1]({{ site.url }}/assets/pysp/1.jpg)
+![image1](/images/posts/pysp/1.jpg)
 
 可以看到webui运行在**5000**端口处，在浏览器打开[127.0.0.1:5000](http://127.0.0.1:5000)或者[localhost:5000](http://localhost:5000)，便能看到框架的UI界面，如下图
 
-![image1]({{ site.url }}/assets/pysp/2.jpg)
+![image1](/images/posts/pysp/2.jpg)
 
 这样pyspider就算是跑起来了。有的文章会提到需要安装**phantomjs**，这个暂时用不上，先忽略。
 
@@ -45,20 +45,20 @@ category: "Python"
 
 拿这个网页来做例子：[www.reeoo.com](http://www.reeoo.com)，爬取上面的数据。
 
-![image1]({{ site.url }}/assets/pysp/3.jpg)
+![image1](/images/posts/pysp/3.jpg)
 
 <h4>新建任务</h4>
 
 第一次跑起来的时候因为没有任务，界面的列表为空，右边有个**Create**按钮，点击新建任务。
 
-![image1]({{ site.url }}/assets/pysp/4.jpg)
+![image1](/images/posts/pysp/4.jpg)
 
 +	Project Name：任务的名字，可以任意填
 +	Start URL(s)：爬取任务开始的地址，这里我们填目标网址的url
 
 填写完成后，点击**Create**，便创建成功并跳转到了另一个界面，如下图所示
 
-![image1]({{ site.url }}/assets/pysp/5.jpg)
+![image1](/images/posts/pysp/5.jpg)
 
 界面右边区域自动生成了初始默认的代码：
 
@@ -110,49 +110,49 @@ category: "Python"
 
 **Ps.** 需要注意的一个地方，前面跑的 **run.py** 不是下载的源码文件夹中的，而是在 `pyspider` 文件夹中的 **run.py**，如下图，可以看到有两个 **run.py** 文件，虽然两个都能跑起来，但我们用到的是圈出来的那个，否则不能通过 **--config** 配置。
 
-![image1]({{ site.url }}/assets/pysp/6.jpg)
+![image1](/images/posts/pysp/6.jpg)
 
 成功跑起来之后可以看到在当前文件夹中生成了一个 `data` 文件夹，生成的结果默认会保存到 **result.db** 中，爬取数据后可打开看里面保存了运行的结果。
 
-![image1]({{ site.url }}/assets/pysp/7.jpg)
+![image1](/images/posts/pysp/7.jpg)
 
 <h4>运行</h4>
 
 点击左边绿色区域右上角的 **run** 按钮，运行之后页面下册的 **follows** 按钮出现红色角标
 
-![image1]({{ site.url }}/assets/pysp/8.jpg)
+![image1](/images/posts/pysp/8.jpg)
 
 选中 **follows** 按钮，看到 **index_page** 行，点击行右侧的运行按钮
 
-![image1]({{ site.url }}/assets/pysp/9.jpg)
+![image1](/images/posts/pysp/9.jpg)
 
 运行完成后显示如下图，即 `www.reeoo.com` 页面上所有的url
 
-![image1]({{ site.url }}/assets/pysp/10.jpg)
+![image1](/images/posts/pysp/10.jpg)
 
 此时我们可以任意选择一个结果运行，这时候调用的是 **detail_page** 方法，返回最终的结果。
 
 结果为json格式的数据，这里我们保存的是网页的 `title` 和 `url`，见左侧黑色的区域
 
-![image1]({{ site.url }}/assets/pysp/11.jpg)
+![image1](/images/posts/pysp/11.jpg)
 
 回到主页面，此时看到任务列表显示了我们刚刚创建的任务，设置 **status** 为 `running`，然后点击 **Run** 按钮执行
 
-![image1]({{ site.url }}/assets/pysp/12.jpg)
+![image1](/images/posts/pysp/12.jpg)
 
 执行过程中可以看到整个过程的打印输出
 
-![image1]({{ site.url }}/assets/pysp/13.jpg)
+![image1](/images/posts/pysp/13.jpg)
 
 执行完成后，点击 **Results** 按钮，进入到爬取结果的页面
 
-![image1]({{ site.url }}/assets/pysp/14.jpg)
+![image1](/images/posts/pysp/14.jpg)
 
-![image1]({{ site.url }}/assets/pysp/15.jpg)
+![image1](/images/posts/pysp/15.jpg)
 
 右上方的按钮选择将结果数据保存成对应的格式，例如：JSON格式的数据为：
 
-![image1]({{ site.url }}/assets/pysp/16.jpg)
+![image1](/images/posts/pysp/16.jpg)
 
 以上则为pyspider的基本使用方式。
 
@@ -160,13 +160,13 @@ category: "Python"
 
 接下来我们通过自定义来抓取我们需要的数据，目标为抓取这个页面中，每个详情页内容的标题、标签、描述、图片的url、点击图片所跳转的url。
 
-![image1]({{ site.url }}/assets/pysp/17.jpg)
+![image1](/images/posts/pysp/17.jpg)
 
-![image1]({{ site.url }}/assets/pysp/18.jpg)
+![image1](/images/posts/pysp/18.jpg)
 
 点击首页中的 **project name > reo**，跳转到脚本的编辑界面
 
-![image1]({{ site.url }}/assets/pysp/19.jpg)
+![image1](/images/posts/pysp/19.jpg)
 
 <h4>获取所有详情页面的url</h4>
 
@@ -174,7 +174,7 @@ category: "Python"
 
 通过查看源码，可以发现 **class** 为 **thum** 的 **div** 标签里，所包含的 **a** 标签的 **href** 值即为我们需要提取的数据，如下图
 
-![image1]({{ site.url }}/assets/pysp/20.jpg)
+![image1](/images/posts/pysp/20.jpg)
 
 代码的实现
 
@@ -192,19 +192,19 @@ category: "Python"
 
 点击代码区域右上方的 **save** 按钮保存，并运行起来之后的结果如下图，中间的灰色区域为打印的结果
 
-![image1]({{ site.url }}/assets/pysp/21.jpg)
+![image1](/images/posts/pysp/21.jpg)
 
 注意左侧区域下方的几个按钮，可以展示当前所爬取页面的一些信息，**web** 按钮可以查看当前页面，**html** 显示当前页面的源码，**enable css selector helper** 可以通过选中当前页面的元素自动生成对应的 css 选择器方便的插入到脚本代码中，不过并不是总有效，在我们的demo中就是无效的~
 
-![image1]({{ site.url }}/assets/pysp/22.jpg)
+![image1](/images/posts/pysp/22.jpg)
 
-![image1]({{ site.url }}/assets/pysp/23.jpg)
+![image1](/images/posts/pysp/23.jpg)
 
 <h4>抓取详情页中指定的信息</h4>
 
 接下来开始抓取详情页中的信息，任意选择一条当前的结果，点击运行，如选择第一个
 
-![image1]({{ site.url }}/assets/pysp/24.jpg)
+![image1](/images/posts/pysp/24.jpg)
 
 实现 **detail_page** 函数，具体的代码实现：
 
@@ -239,7 +239,7 @@ category: "Python"
 
 标签页包含在 **header** 中，**a** 的文本内容即为标签，因为标签有可能不为1，所以通过一个数组去存储遍历的结果 **header.items('a')**，具体html的源码如下图：
 
-![image1]({{ site.url }}/assets/pysp/25.jpg)
+![image1](/images/posts/pysp/25.jpg)
 
 **response.doc('div[id="post_content"]')** 获取 **id** 值为 **post_content** 的 **div** 标签，并从中取得详情页的描述内容，有的页面这部分内容可能为空。
 
@@ -257,11 +257,11 @@ category: "Python"
 
 保存之后直接点击左边区域的 **run** 按钮运行起来，结果如图，中间灰色区域为分析抓取到的结果。
 
-![image1]({{ site.url }}/assets/pysp/26.jpg)
+![image1](/images/posts/pysp/26.jpg)
 
 在主页把任务重新跑起来，查看运行结果，可以看到我们需要的数据都抓取下来
 
-![image1]({{ site.url }}/assets/pysp/27.jpg)
+![image1](/images/posts/pysp/27.jpg)
 
 <h3>将数据保存到本地的数据库</h3>
 
@@ -289,9 +289,9 @@ category: "Python"
 
 **Ps.** 在运行之前，你得保证打开本地的数据库 **mongodb** 和 **redis**，具体怎么玩自行google，反正这两个界面跑起来就对了~ 
 
-![image1]({{ site.url }}/assets/pysp/28.jpg)
+![image1](/images/posts/pysp/28.jpg)
 
-![image1]({{ site.url }}/assets/pysp/29.jpg)
+![image1](/images/posts/pysp/29.jpg)
 
 通过设置参数的命令重新运行起来：
 
@@ -339,11 +339,11 @@ category: "Python"
 
 运行过程中可以看到 **mongodb** 中的打印不断有数据插入
 
-![image1]({{ site.url }}/assets/pysp/30.jpg)
+![image1](/images/posts/pysp/30.jpg)
 
 运行完成后，浏览器查看结果，因为设置了数据库的存储，不再存储在默认的 resultdb 中，此时浏览器的result界面是没有数据的
 
-![image1]({{ site.url }}/assets/pysp/31.jpg)
+![image1](/images/posts/pysp/31.jpg)
 
 通过命令行进入数据库查询数据：
 

@@ -28,7 +28,7 @@ category: "Python"
 
 本文会通过这个网页[http://reeoo.com](http://reeoo.com)来进行示例讲解，如下图所示
 
-![image1]({{ site.url }}/assets/BS4/1.jpg)
+![image1](/images/posts/BS4/1.jpg)
 
 
 <h4>BeautifulSoup 对象初始化</h4>
@@ -129,7 +129,7 @@ ps. 因为class属于多值属性，所以它的值为数组。
 
 如下图：
 
-![image1]({{ site.url }}/assets/BS4/2.jpg)
+![image1](/images/posts/BS4/2.jpg)
 
 我们希望获取到 **article** 标签中的 **li**
 
@@ -298,11 +298,11 @@ tag的 **.contents** 属性可以将tag的子节点以列表的方式输出:
 打印搜索结果可看到包含3个元素，分别是对应标签里的内容，具体见下图所示
 
 
-![image1]({{ site.url }}/assets/BS4/3.jpg)
+![image1](/images/posts/BS4/3.jpg)
 
-![image1]({{ site.url }}/assets/BS4/4.jpg)
+![image1](/images/posts/BS4/4.jpg)
 
-![image1]({{ site.url }}/assets/BS4/5.jpg)
+![image1](/images/posts/BS4/5.jpg)
 
 <h5>limit 参数</h5>
 
