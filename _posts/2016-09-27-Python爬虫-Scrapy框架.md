@@ -52,7 +52,7 @@ category: "Python"
 
 	scrapy startproject Comics
 	
-创建完成后，当前目录下出现对应的项目文件夹，可以看到 **Comics** 文件结构为：
+创建完成后，当前目录下出现对应的项目文件夹，可以看到生成的 **Comics** 文件结构为：
 
 	|____Comics
 	| |______init__.py
@@ -68,6 +68,14 @@ category: "Python"
 Ps. 打印当前文件结构命令为： 
 
 	find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
+	
+每个文件对应的具体功能可查阅官方文档，本篇实现对这些文件涉及不多，所以按下不表。
+
+### 创建Spider类
+
+创建一个用来实现具体爬取功能的类，我们所有的处理实现都会在这个类中进行，它必须为 `scrapy.Spider` 的子类。
+
+在 `Comics/spiders` 文件路径下创建 `comics.py` 文件。
 
 ### 运行
 
