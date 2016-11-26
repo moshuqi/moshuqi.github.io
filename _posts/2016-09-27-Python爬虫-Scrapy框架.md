@@ -77,7 +77,44 @@ Ps. 打印当前文件结构命令为：
 
 在 `Comics/spiders` 文件路径下创建 `comics.py` 文件。
 
+`comics.py` 的具体实现：
+
+	#coding:utf-8
+	
+	import scrapy
+	
+	class Comics(scrapy.Spider):
+	
+		name = "comics"
+	
+		def start_requests(self):
+			urls = ['http://www.xeall.com/shenshi']
+			for url in urls:
+				yield scrapy.Request(url=url, callback=self.parse)
+	
+		def parse(self, response):
+			self.log(response.body);
+    
+自定义的类为`scrapy.Spider`的子类，其中的`name`属性为该爬虫的唯一标识，作为scrapy爬取命令的参数。其他方法的属性后续再解释。
+
 ### 运行
+
+创建好自定义的类后，切换到`Comics`路径下，运行命令，启动爬虫任务开始爬取网页。
+
+	scrapy crawl comics
+	
+打印的结果为爬虫运行过程中的信息，和目标爬取网页的html源码。
+
+	2016-11-26 22:04:35 [scrapy] INFO: Scrapy 1.2.1 started (bot: Comics)
+	2016-11-26 22:04:35 [scrapy] INFO: Overridden settings: {'ROBOTSTXT_OBEY': True, 'BOT_NAME': 'Comics', 'NEWSPIDER_MODULE': 'Comics.spiders', 'SPIDER_MODULES': ['Comics.spiders']}
+	2016-11-26 22:04:35 [scrapy] INFO: Enabled extensions:
+	['scrapy.extensions.corestats.CoreStats',
+	 'scrapy.extensions.telnet.TelnetConsole',
+	 'scrapy.extensions.logstats.LogStats']
+	 ...
+	 
+此时，一个基本的爬虫创建完成了，下面是具体过程的实现。
+
 
 ## 爬取漫画图片
 
