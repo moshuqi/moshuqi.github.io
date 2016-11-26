@@ -65,7 +65,9 @@ category: "Python"
 	| | |______pycache__
 	|____scrapy.cfg
 	
-(Ps. 打印当前文件结构命令： find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g')
+Ps. 打印当前文件结构命令为： 
+
+	find . -print | sed -e 's;[^/]*/;|____;g;s;____|; |;g'
 
 ### 运行
 
