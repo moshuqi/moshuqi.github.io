@@ -120,11 +120,83 @@ Ps. 打印当前文件结构命令为：
 
 ### 起始地址
 
+爬虫的起始地址为：
+
+	http://www.xeall.com/shenshi
+	
+我们主要的关注点在于页面中间的漫画列表，列表下方有显示页数的控件。如下图所示
+
 ![image](/images/posts/scrapy/1.jpg)
+
+爬虫的主要任务是爬取列表中每一部漫画的图片，爬取完当前页后，进入下一页漫画列表继续爬取漫画，依次不断循环直至所有漫画爬取完毕。
+
+起始地址的`url`我们放在了`start_requests`函数的`urls`数组中。其中`start_requests`是重载了父类的方法，爬虫任务开始时会执行到这个方法。
+
+`start_requests`方法中主要的执行在这一行代码：请求指定的`url`，请求完成后调用对应的回调函数`self.parse`
+
+	scrapy.Request(url=url, callback=self.parse)
+	
+对于之前的代码其实还有另一种实现方式：
+
+	#coding:utf-8
+	
+	import scrapy
+	
+	class Comics(scrapy.Spider):
+	
+		name = "comics"
+		start_urls = ['http://www.xeall.com/shenshi']
+	
+		def parse(self, response):
+			self.log(response.body);
+			
+`start_urls`是框架中提供的属性，为一个包含目标网页url的数组，设置了`start_urls`的值后，不需要重载`start_requests`方法，爬虫也会依次爬取`start_urls`中的地址，并在请求完成后自动调用`parse`作为回调方法。
+
+不过为了在过程中方便调式其它的回调函数，demo中还是使用了前一种实现方式。
 
 ### 爬取漫画url
 
+从起始网页开始，首先我们要爬取到每一部漫画的url。
+
 #### 当前页漫画列表
+
+起始页为漫画列表的第一页，我们要从当前页中提取出所需信息，动过实现回调`parse`方法。
+
+在开头导入`BeautifulSoup`库
+
+	from bs4 import BeautifulSoup
+	
+请求返回的**html**源码用来给`BeautifulSoup`初始化。
+
+	def parse(self, response):
+		content = response.body;
+		soup = BeautifulSoup(content, "html5lib")
+		
+初始化指定了`html5lib`解释器，若没安装这里会报错。BeautifulSoup初始化时若不提供指定解释器，则会自动使用自认为匹配的最佳解释器，这里有个坑，对于目标网页的源码使用默认最佳解释器为`lxml`，此时解析出的结果会有问题，而导致无法进行接下来的数据提取。所以当发现有时候提取结果又问题时，打印`soup`看看是否正确。
+
+查看html源码可知，页面中显示漫画列表的部分为类名为`listcon`的`ul`标签，通过`listcon`类能唯一确认对应的标签
+
+![image](/images/posts/scrapy/2.jpg)
+
+提取包含漫画列表的标签
+
+	listcon_tag = soup.find('ul', class_='listcon')
+	
+上面的`find`方法意为寻找`class`为`listcon`的`ul`标签，返回的是对应标签的所有内容。
+
+在列表标签中查找所有拥有`href`属性的`a`标签，这些`a`标签即为每部漫画对应的信息。
+
+	com_a_list = listcon_tag.find_all('a', attrs={'href': True})
+	
+然后将每部漫画的`href`属性合成完整能访问的url地址，保存在一个数组中。
+	
+	comics_url_list = []
+	base = 'http://www.xeall.com'
+		for tag_a in com_a_list:
+			url = base + tag_a['href']
+			comics_url_list.append(url)
+				
+此时`comics_url_list`数组即包含当前页每部漫画的url。
 
 #### 下一页列表
 
@@ -133,3 +205,10 @@ Ps. 打印当前文件结构命令为：
 #### 当前页图片
 
 #### 下一页图片
+
+
+
+
+
+
+
