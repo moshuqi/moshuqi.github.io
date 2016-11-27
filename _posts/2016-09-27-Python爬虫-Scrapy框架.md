@@ -52,7 +52,7 @@ category: "Python"
 
 	scrapy startproject Comics
 	
-创建完成后，当前目录下出现对应的项目文件夹，可以看到生成的 **Comics** 文件结构为：
+创建完成后，当前目录下出现对应的项目文件夹，可以看到生成的`Comics`文件结构为：
 
 	|____Comics
 	| |______init__.py
@@ -119,6 +119,8 @@ Ps. 打印当前文件结构命令为：
 ## 爬取漫画图片
 
 ### 起始地址
+
+![image](/images/posts/scrapy/1.jpg)
 
 ### 爬取漫画url
 
