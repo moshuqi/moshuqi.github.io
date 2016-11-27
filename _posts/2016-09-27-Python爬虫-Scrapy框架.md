@@ -200,11 +200,221 @@ Ps. 打印当前文件结构命令为：
 
 #### 下一页列表
 
+看到列表下方的选择页控件，我们可以通过这个地方来获取到下一页的url。
+
+![image](/images/posts/scrapy/3.jpg)
+
+获取选择页标签中，所有包含`href`属性的`a`标签
+
+	page_tag = soup.find('ul', class_='pagelist')
+	page_a_list = page_tag.find_all('a', attrs={'href': True})
+	
+这部分源码如下图，可看到，所有的`a`标签中，倒数第一个代表末页的url，倒数第二个代表下一页的url，因此，我们可以通过取`page_a_list`数组中倒数第二个元素来获取到下一页的url。
+	
+![image](/images/posts/scrapy/5.jpg)
+
+但这里需要注意的是，若当前为最后一页时，不需要再取下一页。那么如何判断当前页是否是最后一页呢？
+
+可以通过`select`控件来判断。通过源码可以判断，当前页对应的`option`标签会具有`selected`属性，下图为当前页为第一页
+
+![image](/images/posts/scrapy/4.jpg)
+
+下图为当前页为最后一页
+
+![image](/images/posts/scrapy/6.jpg)
+
+通过当前页数与最后一页页数做对比，若相同则说明当前页为最后一页。
+
+	select_tag = soup.find('select', attrs={'name': 'sldd'})
+	option_list = select_tag.find_all('option')
+
+	last_option = option_list[-1]
+	current_option = select_tag.find('option' ,attrs={'selected': True})
+
+	is_last = (last_option.string == current_option.string)
+	
+当前不为最后一页，则继续对下一页做相同的处理，请求依然通过回调`parse`方法做处理
+
+	if not is_last:
+		next_page = 'http://www.xeall.com/shenshi/' + page_a_list[-2]['href']
+		if next_page is not None:
+			print('\n------ parse next page --------')
+			print(next_page)
+			yield scrapy.Request(next_page, callback=self.parse)
+			
+通过同样的方式依次处理每一页，直到所有页处理完成。
+
 ### 爬取漫画图片
+
+在`parse`方法中提取到当前页的所有漫画url时，就可以开始对每部漫画进行处理。
+
+在获取到`comics_url_list`数组的下方加上下面代码：
+
+	for url in comics_url_list:
+		yield scrapy.Request(url=url, callback=self.comics_parse)
+		
+对每部漫画的url进行请求，回调处理方法为`self.comics_parse`，`comics_parse`方法用来处理每部漫画，下面为具体实现。
 
 #### 当前页图片
 
+首相将请求返回的源码构造一个`BeautifulSoup`，和前面基本一致
+
+	def comics_parse(self, response):
+		content = response.body;
+		soup = BeautifulSoup(content, "html5lib")
+		
+提取选择页控件标签，页面显示和源码如下所示
+
+![image](/images/posts/scrapy/7.jpg)
+
+![image](/images/posts/scrapy/8.jpg)
+
+提取`class`为`pagelist`的`ul`标签
+
+	page_list_tag = soup.find('ul', class_='pagelist')
+	
+查看源码可以看到当前页的`li`标签的`class`属性`thisclass`，以此获取到当前页页数
+
+	current_li = page_list_tag.find('li', class_='thisclass')
+	page_num = current_li.a.string
+	
+当前页图片的标签和对应源码
+
+![image](/images/posts/scrapy/9.jpg)
+
+![image](/images/posts/scrapy/10.jpg)
+
+获取当前页图片的url，以及漫画的标题。漫画标题之后用来作为存储对应漫画的文件夹名称。
+
+	li_tag = soup.find('li', id='imgshow')
+	img_tag = li_tag.find('img')
+	
+	img_url = img_tag['src']
+	title = img_tag['alt']
+	
+
+#### 保存到本地
+
+当提取到图片url时，便可通过url请求图片并保存到本地
+
+	self.save_img(page_num, title, img_url)
+	
+定义了一个专门用来保存图片的方法`save_img`，具体完整实现如下
+
+	# 先导入库
+	import os
+	import urllib
+	import zlib
+
+	def save_img(self, img_mun, title, img_url):
+		# 将图片保存到本地
+		self.log('saving pic: ' + img_url)
+
+		# 保存漫画的文件夹
+		document = '/Users/moshuqi/Desktop/cartoon'
+
+		# 每部漫画的文件名以标题命名
+		comics_path = document + '/' + title
+		exists = os.path.exists(comics_path)
+		if not exists:
+			self.log('create document: ' + title)
+			os.makedirs(comics_path)
+
+		# 每张图片以页数命名
+		pic_name = comics_path + '/' + img_mun + '.jpg'
+
+		# 检查图片是否已经下载到本地，若存在则不再重新下载
+		exists = os.path.exists(pic_name)
+		if exists:
+			self.log('pic exists: ' + pic_name)
+			return
+
+		try:
+			user_agent = 'Mozilla/4.0 (compatible; MSIE 5.5; Windows NT)'
+			headers = { 'User-Agent' : user_agent }
+
+			req = urllib.request.Request(img_url, headers=headers)
+			response = urllib.request.urlopen(req, timeout=30)
+
+			# 请求返回到的数据
+			data = response.read()
+
+			# 若返回数据为压缩数据需要先进行解压
+			if response.info().get('Content-Encoding') == 'gzip':
+				data = zlib.decompress(data, 16 + zlib.MAX_WBITS)
+
+			# 图片保存到本地
+			fp = open(pic_name, "wb")
+			fp.write(data)
+			fp.close
+
+			self.log('save image finished:' + pic_name)
+
+		except Exception as e:
+			self.log('save image error.')
+			self.log(e)
+			
+函数主要用到3个参数，当前图片的页数，漫画的名称，图片的url。
+
+图片会保存在以漫画名称命名的文件夹中，若不存在对应文件夹，则创建一个，一般在获取第一张图时需要自主创建一个文件夹。
+
+`document`为本地指定的文件夹，可自定义。
+
+每张图片以`页数.jpg`的格式命名，若本地已存在同名图片则不再进行重新下载，一般用在反复开始任务的情况下进行判断以避免对已存在图片进行重复请求。
+
+请求返回的图片数据是被压缩过的，可以通过`response.info().get('Content-Encoding')`的类型来进行判断。压缩过的图片要先经过`zlib.decompress`解压再保存到本地，否则图片打不开。
+	
+大体实现思路如上，代码中也附上注释了。
+
 #### 下一页图片
+
+和在漫画列表界面中的处理方式类似，在漫画页面中我们也需要不断获取下一页的图片，不断的遍历直至最后一页。
+
+![image](/images/posts/scrapy/11.jpg)
+
+当下一页标签的`href`属性为`#`时为漫画的最后一页
+
+	a_tag_list = page_list_tag.find_all('a')
+	next_page = a_tag_list[-1]['href']
+	if next_page == '#':
+		self.log('parse comics:' + title + 'finished.')
+	else:
+		next_page = 'http://www.xeall.com/shenshi/' + next_page
+		yield scrapy.Request(next_page, callback=self.comics_parse)
+		
+若当前为最后一页，则该部漫画遍历完成，否则继续通过相同方式处理下一页
+
+	yield scrapy.Request(next_page, callback=self.comics_parse)
+	
+### 运行结果
+
+大体的实现基本完成，运行起来，可以看到控制台打印情况
+
+![image](/images/posts/scrapy/12.jpg)
+
+本地文件夹保存到的图片
+
+![image](/images/posts/scrapy/13.jpg)
+
+scrapy框架运行的时候使用了多线程，能够看到多部漫画是同时进行爬取的。
+
+目标网站资源服务器感觉比较慢，会经常出现请求超时的情况。跑的时候请耐心等待。：）
+
+## 最后
+
+本文介绍的只是scrapy框架非常基本的用法，还有各种很细节的特性配置等感兴趣的同学自己查阅官方文档了。
+
+最后附上[完整Demo源码](https://github.com/moshuqi/DemoCodes/tree/master/Comics)，我会告诉你其实目标网站是福利么？-_-
+
+![image](/images/posts/scrapy/14.jpg)
+
+完。
+
+
+
+
+
+
 
 
 
