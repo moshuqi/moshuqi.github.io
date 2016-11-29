@@ -402,9 +402,9 @@ scrapy框架运行的时候使用了多线程，能够看到多部漫画是同�
 
 ## 最后
 
-本文介绍的只是scrapy框架非常基本的用法，还有各种很细节的特性配置等感兴趣的同学自己查阅官方文档了。
+本文介绍的只是scrapy框架非常基本的用法，还有各种很细节的特性配置，如使用`FilesPipeline`、`ImagesPipeline`来保存下载的文件或者图片；框架本身自带了个`XPath`类用来对网页信息进行提取，这个的效率要比`BeautifulSoup`高；也可以通过专门的`item`类将爬取的数据结果保存作为一个类返回。具体请查阅官网。
 
-最后附上[完整Demo源码](https://github.com/moshuqi/DemoCodes/tree/master/Comics)，我会告诉你其实目标网站是福利么？-_-
+最后附上[完整Demo源码](https://github.com/moshuqi/DemoCodes/tree/master/Comics)，如果我告诉你其实目标网站是福利你会给个star么？-_-
 
 ![image](/images/posts/scrapy/14.jpg)
 
