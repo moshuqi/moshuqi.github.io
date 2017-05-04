@@ -287,3 +287,127 @@ Android本身自带接口，当打开**.apk**格式的文件时跳转到安装�
 
 
 ### 增量更新
+
+增量更新的原理，就是将手机上已安装apk与服务器端最新apk进行二进制对比，得到差分包，用户更新程序时，只需要下载差分包，并在本地使用差分包与已安装apk，合成新版apk。
+
+apk文件的差分、合成可以通过[开源的二进制比较工具 bsdiff](http://www.daemonology.net/bsdiff/)实现。
+
+#### 处理差分包的代码实现
+
+项目中引入第三方动态库 **libApkPatchLibrary.so**
+
+引入对应的包 com.cundong.utils.PatchUtils
+
+(差分包更新的实现参考了[这篇文章](https://github.com/cundong/SmartAppUpdates)，其中也用到了里面的文件)
+
+**DownloadService** 下载完成时，根据服务器提供的 **diffUpdate** 字段来判断是否为差分包文件，若是，则将差分包文件与当前的apk合成新的apk，并安装新的apk
+
+安装前合成代码的实现
+
+	if (isDiff) {
+		 // 增量式升级，先将patch合成新apk
+		 String oldApkPath = InfoUtils.getBaseApkPath(getApplicationContext());
+		 String newApkName = "update.apk";
+		 String newApkPath = dir.getPath() + "/" + newApkName;
+		 String patchPath = downloadFile.getPath();
+		
+		 Log.i(TAG, "MD5:");
+		 Log.i(TAG, "old apk md5: " + SignUtils.getMd5ByFile(new File(oldApkPath)));
+		 Log.i(TAG, "new apk md5: " + SignUtils.getMd5ByFile(new File(newApkPath)));
+		 Log.i(TAG, "patch md5: " + SignUtils.getMd5ByFile(new File(patchPath)));
+		
+		 Log.i(TAG, "Patch diff...");
+		 int patchResult = PatchUtils.patch(oldApkPath, newApkPath, patchPath);
+		 if (patchResult == 0) {
+		     apkFile = new File(newApkPath);
+		 }
+	}
+	
+	installAPk(apkFile);
+	
+应用当前的apk会保存在系统特定的位置，通过 ***getBaseApkPath*** 方法获取路径，方法的具体实现
+
+	public static String getBaseApkPath(Context context) {
+        String pkName = context.getPackageName();
+        try {
+            ApplicationInfo appInfo = context.getPackageManager().getApplicationInfo(pkName, 0);
+            String path = appInfo.sourceDir;
+            return path;
+        } catch (PackageManager.NameNotFoundException e) {
+
+        }
+
+        return null;
+    }
+
+**PatchUtils.patch** 方法将旧apk文件与差分包文件合成新apk，并保存到newApkPath路径下。
+
+然后和完全更新的方式一样，通过 **installAPk(apkFile);** 安装更新。
+
+#### 生成差分包文件
+
+首先安装差分包生成工具，下载地址为[http://www.daemonology.net/bsdiff/](http://www.daemonology.net/bsdiff/)
+
+安装完成后，试着在命令行敲 **bsdiff** 命令
+
+	bsdiff
+	bsdiff: usage: bsdiff oldfile newfile patchfile
+	
+可看到该命令接收3个参数，依次为*旧的文件*、*新的文件*、*生成的差分包文件*
+
+和之前Build Apk方式一样，先将未修改前的应用编一个apk文件，命名为old.apk
+
+然后修改应用的背景色和版本信息，重新编一个apk文件，命名为new.apk
+
+将新旧两个apk文件拷贝到同一目录下，命令行cd到当前目录下，运行命令 
+
+	old.apk new.apk patch.zip
+	
+完成后可看到在当前目录下生成了新文件 **patch.zip**，将**patch.zip**拷贝到服务器的**ota_file**文件夹下
+
+服务器返回的信息做对应修改
+
+	var info = {
+        'url': '/ota_file/patch.zip',
+        'updateMessage': 'Fix bugs.',
+        'versionName': 'v2',
+        'md5': '',
+        'diffUpdate': true                        
+	};
+	
+**diffUpdate** 改为 **true**，**url** 改为差分包文件
+
+#### 运行
+
+之前的运行都是通过Android Studio直接连手机真机跑起来的，但是调试差分包升级时需要注意，差分包必须保证本地应用的apk文件与生成差分包时的old.apk文件完全一致，否则合成新的apk会失败。
+
+而每次通过Android Studio连接手机编起来的应用所生成的apk文件都是不一样的，虽然代码一模一样。
+
+为了测试差分包，手机必须通过旧的apk来安装并运行应用
+
+用 **adb** 命令安装
+
+	adb install -r old.apk 
+	
+结果打印
+
+	[100%] /data/local/tmp/old.apk
+	pkg: /data/local/tmp/old.apk
+	Success
+	
+安装完成后运行，和之前一样操作的流程。
+
+end。
+
+### 其他
+
+实际生产中的升级过程还会涉及到很多逻辑处理细节，比如下载完成之后的MD5校验，下载前判断本地是否存在更新文件等，但基本的更新方式和流程如上所示。
+
+Demo附完整源码，源码里还附了一些工具类处理一些细节。
+
+运行时只需按照文章之前所示，修改服务器信息即可进行相应的升级方式。
+
+[Demo源码地址](https://github.com/moshuqi/DemoCodes/tree/master/OTA)
+	
+
+
