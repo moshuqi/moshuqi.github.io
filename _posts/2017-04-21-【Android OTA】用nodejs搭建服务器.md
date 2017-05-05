@@ -4,9 +4,9 @@ title:  【Android OTA】用nodejs搭建服务器
 category: "Android"
 ---
 
-OTA，Over-the-Air的简写，OTA升级就是通过GPRS、3G、无线网络下载升级补丁升级，不用通过有线连接来升级。
+OTA，Over-the-Air的简写，OTA升级就是通过GPRS、3G、无线网络下载升级补丁升级，不用通过有线连接来升级。Android的应用或者是整个系统，都可以通过OTA的方式进行版本的更新升级。
 
-Android的应用或是系统，可以通过这种方式进行版本的更新升级。OTA具体原理自行google，或者参考[这篇文章](https://source.android.com/devices/tech/ota/)。本文和接下来的两篇文章主要介绍的是具体的实现过程。
+OTA具体原理自行google，或者参考[这篇文章](https://source.android.com/devices/tech/ota/)。本文和接下来的两篇文章主要介绍的是具体的实现过程。
 
 
 ### OTA升级大致过程
