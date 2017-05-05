@@ -4,9 +4,8 @@ title:  【Android OTA】应用的更新升级
 category: "Android"
 ---
 
-## App更新升级
 
-本文通过实现一个简单的Demo，来介绍App的更新升级方式。提供更新信息的服务器用到了[上一篇文章实现的服务器Demo](https://moshuqi.github.io/2017/04/21/Android-OTA-用nodejs搭建服务器/)。
+Android应用经常会内置检测版本更新的功能，在有版本更新的时候，通过下载更新文件进行本地的升级。本文通过实现一个简单的Demo，来介绍App的更新升级方式。提供更新信息的服务器用到了[上一篇文章实现的服务器Demo](https://moshuqi.github.io/2017/04/21/Android-OTA-用nodejs搭建服务器/)。
 
 App的更新方式主要有两种：
 
