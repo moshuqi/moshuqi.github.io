@@ -6,6 +6,8 @@ category: "Android"
 
 上一篇说了Android应用的升级，这篇来介绍下关于整个系统的升级。公司的车载系统使用了MTK的板子，深度定制的Android系统，平时开发过程中的修改可以直接重新烧录固件，但设备量产投入市场之后的修改只能通过OTA的方式进行更新。
 
+系统升级一般通过差分包的方式，因为整包更新需要的安装包有几百M，一般的小更新打个差分包的话也就几M十几M而已，能省不少流量。
+
 设备检测更新的流程基本和[上一篇文章](https://moshuqi.github.io/2017/04/22/Android-OTA-应用的更新升级/)一样，系统可以在设置界面上增加检测升级的入口。
 
 
@@ -197,7 +199,7 @@ category: "Android"
 	
 若成功则设备重启，并进入recovery模式更新升级，升级完成后设备重启。
 
-#### 系统更新包制作
+#### 制作差分包
 
 MTK系统的目录
 
@@ -212,4 +214,17 @@ ota打包
 打包完成后命令行打印的结果
 
 ![image2](/images/posts/OtaSystem/2.jpg)
+
+这里有两个文件需要注意的，一个在**out/target/product/CM01B**目录下，一个在**out/target/product/CM01B/obj/PACKAGING/target_files_intermediates**目录下（CM01B为产品编号，每个项目不一样），虽然文件名一样，但前者有400多M，后者800多M，和image固件大小差不多。
+
+**out/target/product/CM01B**目录下的文件为完全更新的包，可以用来给系统进行完全升级。
+
+**out/target/product/CM01B/obj/PACKAGING/target_files_intermediates**目录下的文件主要用来生成差分包（具体能不能直接用来升级没尝试过），通过两个这种包可以生成差分包文件。
+
+系统生成差分包的工具在这个位置，官方标准工具，里面包含了制作差分包的脚本
+
+![image3](/images/posts/OtaSystem/3.jpg)
+
+这里需要注意，执行差分包命令时必须在根目录下执行，因为脚本里面写定了相对路径的引用文件。
+
 
