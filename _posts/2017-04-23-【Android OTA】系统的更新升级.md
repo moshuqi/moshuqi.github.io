@@ -227,4 +227,26 @@ ota打包
 
 这里需要注意，执行差分包命令时必须在根目录下执行，因为脚本里面写定了相对路径的引用文件。
 
+制作差分包需要准备两个不同版本的文件（**out/target/product/CM01B/obj/PACKAGING/target_files_intermediates**目录下的），假设分别为**a.zip**和**b.zip**
 
+将两个文件拷贝到根目录下，然后运行命令
+
+	./build/tools/releasetools/ota_from_target_files -i a.zip b.zip ota.zip
+	
+最终生成的差分包文件为**ota.zip**，即**b**相对于**a**修改了的内容，只能用在**a**上将**a**升级成**b**。ota.zip差分包的升级使用要求当前系统必须是a，否则无法进行升级。
+
+#### 系统升级
+
+系统通过差分包升级，安装时进入刷机界面，完成后自动重启，升级完成
+
+![image4](/images/posts/OtaSystem/4.jpg)
+
+如果差分包有不正确或者没保存到内部存储中会报错
+
+![image5](/images/posts/OtaSystem/5.jpg)
+
+
+
+**以上**
+
+源码和设备相关联的，这次就不给了。完。：）
